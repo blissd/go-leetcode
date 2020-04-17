@@ -1,43 +1,57 @@
 package main
 
+import "strconv"
+
 type ListNode struct {
 	Val  int
 	Next *ListNode
 }
 
-func join(ln *ListNode) int64 {
-	shift := int64(1)
-	var sum int64
-	for n := ln; n != nil; n = n.Next {
-		sum += int64(n.Val) * shift
-		shift *= 10
+func (ln *ListNode) String() string {
+	s := "["
+	for ; ln != nil; ln = ln.Next {
+		s += strconv.Itoa(ln.Val)
+		s += ","
 	}
-	return sum
+	s += "]"
+	return s
 }
 
-func split(num int64) *ListNode {
-	last := &ListNode{int(num - ((num / 10) * 10)), nil}
-	head := last
-	num /= 10
-	for num > 0 {
-		digit := int(num - ((num / 10) * 10))
-		last.Next = &ListNode{digit, nil}
-		last = last.Next
-		num /= 10
+func next(ln *ListNode) (int, *ListNode) {
+	if ln == nil {
+		return 0, nil
 	}
-	return head
+	return ln.Val, ln.Next
 }
 
 func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
-	return split(join(l1) + join(l2))
-}
+	v1, l1 := next(l1)
+	v2, l2 := next(l2)
 
-func main() {
-	join(&ListNode{9, nil})
-	split(18)
-	//ln := &ListNode{1, &ListNode{4, &ListNode{3, nil}}}
-	//ln := &ListNode{2, &ListNode{4, &ListNode{3, nil}}}
-	//fmt.Println(join(ln))
-	//
-	//fmt.Println()
+	head := &ListNode{v1 + v2, nil}
+	carry := 0 // carry forward a ten when necessary
+	if head.Val >= 10 {
+		head.Val -= 10
+		carry = 1
+	}
+	last := head
+	for l1 != nil || l2 != nil {
+		v1, l1 = next(l1)
+		v2, l2 = next(l2)
+		sum := v1 + v2 + carry
+		if sum >= 10 {
+			sum -= 10
+			carry = 1
+		} else {
+			carry = 0
+		}
+
+		last.Next = &ListNode{sum, nil}
+		last = last.Next
+	}
+
+	if carry == 1 {
+		last.Next = &ListNode{1, nil}
+	}
+	return head
 }
