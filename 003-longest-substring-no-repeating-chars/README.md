@@ -1,0 +1,2 @@
+Runtime: 8 ms, faster than 66.99% of Go online submissions for Longest Substring Without Repeating Characters.
+Memory Usage: 3.2 MB, less than 36.67% of Go online submissions for Longest Substring Without Repeating Characters.
