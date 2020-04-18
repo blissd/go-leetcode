@@ -1,45 +1,41 @@
 package main
 
 func longestPalindrome(s string) string {
+
 	if len(s) == 0 {
 		return ""
-	} else if len(s) == 1 {
-		return s
 	}
-	rs := []rune(s)
-	ps := make(map[int]int) // map from index to palindrome length
-	var longestStart, longestEnd int
-	for i, _ := range rs {
-		for j := i + 1; j < len(rs); j++ {
-			if length, ok := ps[i]; ok && length >= (j-i)+1 {
-				// previously seen palindrome starts at this index
-				continue
-			}
 
-			// range length is even
+	// each element represents the length of the palindrome at that index in the string
+	ps := make([]int, len(s), len(s))
+	for i, _ := range ps {
+		ps[i] = 1 // every letter is a palindrome of itself
+	}
+
+	var longestIdx int
+	for i, _ := range s {
+		for j := i; j < len(s); j++ {
 			start := i + ((j - i) / 2)
 			end := start + 1
-			if (j-i)%2 == 0 {
+			if i != j && (j-i)%2 == 0 {
 				// odd-range length
 				start -= 1
 			}
 
-			// from middle of range, increment bounds finding all palindromes
-			// hmm... should loop end when start==j and end==j?
-			for ; 0 <= start && end < len(rs); start, end = start-1, end+1 {
-				if rs[start] != rs[end] {
+			for ; 0 <= start && end < len(s); start, end = start-1, end+1 {
+				if s[start] != s[end] {
 					break
 				}
-				if length, ok := ps[start]; ok && length >= (end-start)+1 {
-					// previously seen palindrome, so short circuit
+				if ps[start] > (end-start)+1 {
+					// previously seen palindrome that is longer that current palindrome, so short circuit
 					break
 				}
 				ps[start] = (end - start) + 1
-				if end-start+1 > (longestEnd-longestStart)+1 {
-					longestStart, longestEnd = start, end
+				if ps[start] > ps[longestIdx] {
+					longestIdx = start
 				}
 			}
 		}
 	}
-	return string(rs[longestStart : longestEnd+1])
+	return string(s[longestIdx : longestIdx+ps[longestIdx]])
 }
