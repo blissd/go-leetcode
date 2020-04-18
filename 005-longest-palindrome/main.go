@@ -1,15 +1,5 @@
 package main
 
-// indexes that make up a palindrome
-type pair struct {
-	start int
-	end   int // inclusive
-}
-
-func (p pair) Len() int {
-	return (p.end - p.start) + 1
-}
-
 func longestPalindrome(s string) string {
 	if len(s) == 0 {
 		return ""
@@ -17,12 +7,12 @@ func longestPalindrome(s string) string {
 		return s
 	}
 	rs := []rune(s)
-	ps := make(map[pair]bool)
-	var longest pair
+	ps := make(map[int]int) // map from index to palindrome length
+	var longestStart, longestEnd int
 	for i, _ := range rs {
 		for j := i + 1; j < len(rs); j++ {
-			if _, ok := ps[pair{i, j}]; ok {
-				// this is a previously seen palindrome so short-circuit
+			if length, ok := ps[i]; ok && length >= (j-i)+1 {
+				// previously seen palindrome starts at this index
 				continue
 			}
 
@@ -40,16 +30,16 @@ func longestPalindrome(s string) string {
 				if rs[start] != rs[end] {
 					break
 				}
-				if _, ok := ps[pair{start, end}]; ok {
+				if length, ok := ps[start]; ok && length >= (end-start)+1 {
 					// previously seen palindrome, so short circuit
 					break
 				}
-				ps[pair{start, end}] = true
-				if end-start+1 > longest.Len() {
-					longest = pair{start, end}
+				ps[start] = (end - start) + 1
+				if end-start+1 > (longestEnd-longestStart)+1 {
+					longestStart, longestEnd = start, end
 				}
 			}
 		}
 	}
-	return string(rs[longest.start : longest.end+1])
+	return string(rs[longestStart : longestEnd+1])
 }
