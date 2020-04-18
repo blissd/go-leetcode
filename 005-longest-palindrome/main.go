@@ -40,6 +40,10 @@ func longestPalindrome(s string) string {
 				if rs[start] != rs[end] {
 					break
 				}
+				if _, ok := ps[pair{start, end}]; ok {
+					// previously seen palindrome, so short circuit
+					break
+				}
 				ps[pair{start, end}] = true
 				if end-start+1 > longest.Len() {
 					longest = pair{start, end}
