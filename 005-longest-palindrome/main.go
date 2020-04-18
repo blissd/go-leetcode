@@ -11,7 +11,7 @@ func longestPalindrome(s string) string {
 
 	var longestIdx int
 	for i, _ := range s {
-		for j := i; j < len(s); j++ {
+		for j := i + ps[i]; j < len(s); j++ {
 			start := i + ((j - i) / 2)
 			end := start + 1
 			if i != j && (j-i)%2 == 0 {
