@@ -9,6 +9,8 @@ func myAtoi(s string) int {
 	if s == "" {
 		return 0
 	}
+
+	// start index of number in string, including leading + or - sign.
 	var start int
 	for i, c := range s {
 		if unicode.IsSpace(c) {
@@ -25,6 +27,7 @@ func myAtoi(s string) int {
 		start += 1
 	}
 
+	// now we know where the number starts, keep converting digits until the first non-numeric character
 	var sum int
 	for _, c := range s[start:] {
 		if !unicode.IsNumber(c) {
