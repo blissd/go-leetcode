@@ -68,17 +68,29 @@ func (m repeat) unused() error {
 
 func compile(p string) []matcher {
 	matchers := make([]matcher, 0, len(p))
-	for _, r := range p {
+	for ii, r := range p {
 		switch {
 		case r == '.':
 			matchers = append(matchers, any{})
 		case r == '*':
-			// repeat previous match expression, not previous character
+			// Consolidate adjacent repeating matchers of the same character
+			if matchers[len(matchers)-1].match(rune(p[ii-1])) == matched_repeat {
+				continue
+			}
+			// Repeat previous match expression, not previous character
 			matchers[len(matchers)-1] = repeat{matchers[len(matchers)-1]}
 		default:
-			matchers = append(matchers, exact(r))
+			// if two adjacent matchers match the same character but one is repeating and one is exact, then
+			// make the exact match comes first.
+			if len(matchers) > 0 && matchers[len(matchers)-1].match(r) == matched_repeat {
+				matchers[len(matchers)-1] = exact(r)
+				matchers = append(matchers, repeat{exact(r)})
+			} else {
+				matchers = append(matchers, exact(r))
+			}
 		}
 	}
+
 	return matchers
 }
 
@@ -118,12 +130,6 @@ func isMatch(s string, p string) bool {
 	if m < len(matchers) {
 		for ; m < len(matchers); m++ {
 			if matchers[m].unused() != nil {
-				if matchers[m].match(rune(s[len(s)-1])) == matched {
-					// a repeat of a character is followed by an exact match of a character,
-					// then the exact match won't get evaluated.
-					// So if there ureached matchers would match the last character, then don't fail.
-					continue
-				}
 				return false
 			}
 		}
