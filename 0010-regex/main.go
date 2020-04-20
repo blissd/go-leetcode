@@ -115,9 +115,17 @@ func isMatch(s string, p string) bool {
 	}
 
 	// test matchers to see if they produce an error when they are unused
-	for ; m < len(matchers); m++ {
-		if matchers[m].unused() != nil {
-			return false
+	if m < len(matchers) {
+		for ; m < len(matchers); m++ {
+			if matchers[m].unused() != nil {
+				if matchers[m].match(rune(s[len(s)-1])) == matched {
+					// a repeat of a character is followed by an exact match of a character,
+					// then the exact match won't get evaluated.
+					// So if there ureached matchers would match the last character, then don't fail.
+					continue
+				}
+				return false
+			}
 		}
 	}
 
