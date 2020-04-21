@@ -15,7 +15,7 @@ type matcher interface {
 }
 
 // Matches a specific character.
-type exact uint8
+type once uint8
 
 // Matches any character.
 type any struct{}
@@ -30,7 +30,14 @@ type repeat composite
 // match any character except one
 type not composite
 
+// match exactly
+type exact composite
+
 func (m exact) match(c uint8) result {
+	return m.m.match(c)
+}
+
+func (m once) match(c uint8) result {
 	if c == uint8(m) {
 		return advance_letter | advance_matcher
 	}
@@ -62,7 +69,7 @@ func compile(p string) []matcher {
 	for _, r := range p {
 		switch {
 		case r == '.':
-			matchers = append(matchers, any{})
+			matchers = append(matchers, exact{any{}})
 		case r == '*':
 			m := repeat{matchers[len(matchers)-1]}
 			// Consolidate adjacent repeating matchers of the same character
@@ -78,7 +85,7 @@ func compile(p string) []matcher {
 			//		matchers[len(matchers)-1] = not{exact(r)}
 			//	}
 			//}
-			matchers = append(matchers, exact(r))
+			matchers = append(matchers, exact{once(r)})
 		}
 	}
 
@@ -115,7 +122,6 @@ func isMatch(s string, p string) bool {
 					break
 				}
 			}
-			//exactCount--
 		}
 		mm := matchers[m]
 		result := mm.match(s[i])
