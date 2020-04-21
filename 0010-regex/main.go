@@ -98,21 +98,16 @@ func isMatch(s string, p string) bool {
 		} else if result == matched_repeat {
 			// advance matcher
 			for j := m + 1; j < len(matchers); j++ {
-				if matchers[j].match(s[i]) == matched_repeat {
+				if matchers[j].match(s[i]) == matched_repeat || matchers[j].match(s[i]) == unmatched {
 					m = j
 					continue
 				}
 				break
 			}
 			i++
-			//for j := i+1; j < len(s) && (mm.match(rune(s[i])) == matched_repeat||mm.match(rune(s[i])) == unmatched); i++ {
-			//}
 		}
 	}
 
-	if i != len(s) {
-		return false
-	}
 	for ; m < len(matchers); m++ {
 		if _, ok := matchers[m].(exact); ok {
 			return false
