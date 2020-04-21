@@ -3,9 +3,9 @@ package main
 type result int
 
 const (
-	abort           result = 0b1
-	advance_matcher        = 0b10
-	advance_letter         = 0b100
+	abort           result = 1
+	advance_matcher        = 2
+	advance_letter         = 4
 )
 
 // a rule for matching a rune
@@ -28,7 +28,7 @@ type composite struct {
 type repeat composite
 
 // match any character except one
-type not composite
+type invert composite
 
 // match exactly
 type exact composite
@@ -48,12 +48,15 @@ func (m any) match(_ uint8) result {
 	return advance_letter | advance_matcher
 }
 
-func (m not) match(c uint8) result {
-	r := m.match(c)
+func (m invert) match(c uint8) result {
+	r := m.m.match(c)
 	if r&advance_letter == advance_letter {
 		return advance_matcher
 	}
-	return r
+	if r&advance_matcher == advance_matcher {
+		return advance_letter
+	}
+	return abort
 }
 
 func (m repeat) match(c uint8) result {
@@ -61,7 +64,7 @@ func (m repeat) match(c uint8) result {
 	if r == abort {
 		return advance_matcher
 	}
-	return advance_letter // can only be advance_letter
+	return advance_letter
 }
 
 func compile(p string) []matcher {
@@ -79,11 +82,14 @@ func compile(p string) []matcher {
 			// Repeat previous match expression, not previous character
 			matchers[len(matchers)-1] = m
 		default:
+			if len(matchers) > 1 && matchers[len(matchers)-1] == (repeat{exact{any{}}}) {
+				matchers[len(matchers)-1] = invert{repeat{once(r)}}
+			}
 			//if len(matchers) > 1 {
-			//	switch matchers[len(matchers)-1].(type) {
-			//	case any:
-			//		matchers[len(matchers)-1] = not{exact(r)}
-			//	}
+			//switch matchers[len(matchers)-1].(type) {
+			//case any:
+			//	matchers[len(matchers)-1] = not{exact(r)}
+			//}
 			//}
 			matchers = append(matchers, exact{once(r)})
 		}
