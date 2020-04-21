@@ -72,12 +72,12 @@ func compile(p string) []matcher {
 			// Repeat previous match expression, not previous character
 			matchers[len(matchers)-1] = m
 		default:
-			if len(matchers) > 1 {
-				switch matchers[len(matchers)-1].(type) {
-				case any:
-					matchers[len(matchers)-1] = not{exact(r)}
-				}
-			}
+			//if len(matchers) > 1 {
+			//	switch matchers[len(matchers)-1].(type) {
+			//	case any:
+			//		matchers[len(matchers)-1] = not{exact(r)}
+			//	}
+			//}
 			matchers = append(matchers, exact(r))
 		}
 	}
@@ -96,8 +96,27 @@ func compile(p string) []matcher {
 func isMatch(s string, p string) bool {
 
 	matchers := compile(p)
+
+	var exactCount int // count of exact matches in pattern
+	for m := 0; m < len(matchers); m++ {
+		if _, ok := matchers[m].(exact); ok {
+			exactCount++
+		}
+	}
 	var i, m int
 	for m < len(matchers) && i < len(s) {
+		if _, ok := matchers[m].(exact); ok {
+			exactCount--
+		} else if i+exactCount == len(s) {
+			// we are on a repeating matcher but have unused exact matchers.
+			// Advance to next exact matcher and start using that.
+			for ; m < len(matchers); m++ {
+				if _, ok := matchers[m].(exact); ok {
+					break
+				}
+			}
+			//exactCount--
+		}
 		mm := matchers[m]
 		result := mm.match(s[i])
 		if result == abort {
