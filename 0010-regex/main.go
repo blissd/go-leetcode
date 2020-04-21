@@ -3,14 +3,9 @@ package main
 type result int
 
 const (
-	// matching has failed
-	fail result = iota + 1
-	// No match, but instead of failing advance to next matcher and evaluate again
-	unmatched
-	// Match, but don't advance to next matcher.
-	matched_repeat
-	// Match. Advance to next matcher, but don't evalute current rune again
-	matched
+	abort           result = 0b1
+	advance_matcher        = 0b10
+	advance_letter         = 0b100
 )
 
 // a rule for matching a rune
@@ -33,31 +28,33 @@ type composite struct {
 type repeat composite
 
 // match any character except one
-type except composite
+type not composite
 
 func (m exact) match(c uint8) result {
 	if c == uint8(m) {
-		return matched
+		return advance_letter | advance_matcher
 	}
-	return fail
+	return abort
 }
 
 func (m any) match(_ uint8) result {
-	return matched
+	return advance_letter | advance_matcher
 }
 
-func (m except) match(c uint8) result {
-	if m.m.match(c) == matched_repeat || m.m.match(c) == matched {
-		return unmatched
+func (m not) match(c uint8) result {
+	r := m.match(c)
+	if r&advance_letter == advance_letter {
+		return advance_matcher
 	}
-	return matched
+	return r
 }
 
 func (m repeat) match(c uint8) result {
-	if m.m.match(c) != fail {
-		return matched_repeat
+	r := m.m.match(c)
+	if r == abort {
+		return advance_matcher
 	}
-	return unmatched
+	return advance_letter // can only be advance_letter
 }
 
 func compile(p string) []matcher {
@@ -78,7 +75,7 @@ func compile(p string) []matcher {
 			if len(matchers) > 1 {
 				switch matchers[len(matchers)-1].(type) {
 				case any:
-					matchers[len(matchers)-1] = except{exact(r)}
+					matchers[len(matchers)-1] = not{exact(r)}
 				}
 			}
 			matchers = append(matchers, exact(r))
@@ -101,33 +98,15 @@ func isMatch(s string, p string) bool {
 	matchers := compile(p)
 	var i, m int
 	for m < len(matchers) && i < len(s) {
-		//if i == len(s) {
-		//	return false // unused matchers remaining
-		//}
 		mm := matchers[m]
 		result := mm.match(s[i])
-		if result == fail {
+		if result == abort {
 			return false
-		} else if result == unmatched {
+		}
+		if result&advance_matcher == advance_matcher {
 			m++
-			continue
-		} else if result == matched {
-			m++
-			i++
-		} else if result == matched_repeat {
-			// advance matcher
-			for j := m + 1; j < len(matchers); j++ {
-				rs := matchers[j].match(s[i])
-				if rs == matched_repeat || rs == unmatched {
-					m = j
-					continue
-				}
-				//else if matchers[j].match(s[i]) == matched {
-				//	m = j  // +1 because this matcher is satisfied by s[i]
-				//	break
-				//}
-				break
-			}
+		}
+		if result&advance_letter == advance_letter {
 			i++
 		}
 	}
