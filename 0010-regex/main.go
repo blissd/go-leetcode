@@ -84,6 +84,14 @@ func compile(p string) []matcher {
 		}
 	}
 
+	// re-order matchers so an exact(x) and repeat(exact(x)) are adjacent, then the exact comes first
+	for i := 1; i < len(matchers); i++ {
+		if matchers[i-1] == (repeat{matchers[i]}) {
+			matchers[i-1], matchers[i] = matchers[i], matchers[i-1]
+			i = 0 // restart sort from beginning
+		}
+	}
+
 	return matchers
 }
 
@@ -91,30 +99,44 @@ func isMatch(s string, p string) bool {
 
 	matchers := compile(p)
 	var m int
-	for _, r := range s {
+	for i, r := range s {
+		i = i
 		if m == len(matchers) {
 			// we've used the last matcher but still have more characters to evaluate, so fail
 			return false
 		}
-		for m < len(matchers) {
-			result := matchers[m].match(r)
-			if result == fail {
-				return false
-			}
-			if result == unmatched {
-				// no match, so advance to next matcher and try again
-				m++
-				if m == len(matchers) {
+
+		result := matchers[m].match(r)
+
+		if result == fail {
+			return false
+		} else if result == matched {
+			m++
+		} else if result == unmatched {
+			// no match, so advance matchers until match or failure
+			for m += 1; m < len(matchers); m++ {
+				result := matchers[m].match(r)
+				if result == fail {
 					return false
 				}
-				continue
+				if result == unmatched {
+					continue
+				}
+				if result == matched_repeat {
+					break
+				}
+				if result == matched {
+					m++
+					break
+				}
 			}
-			if result == matched {
-				m++
-				break
-			}
-			if result == matched_repeat {
-				break
+		} else if result == matched_repeat {
+			// must match shortest set of repeating characters
+			for mm := m + 1; mm < len(matchers); mm++ {
+				if matchers[mm].match(r) != matched_repeat {
+					break
+				}
+				m = mm
 			}
 		}
 	}
