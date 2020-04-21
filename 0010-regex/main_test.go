@@ -20,6 +20,7 @@ func Test_isMatch(t *testing.T) {
 		{"failure 1a", args{"aaa", "a*a"}, true},
 		{"failure 1b", args{"aaa", "aa*"}, true},
 		{"failure 1c", args{"aaa", "a*a*"}, true},
+		{"failure 1d", args{"aaa", "a*a*a"}, true},
 		{"failure 2a", args{"aaa", "aaaa"}, false},
 	}
 	for _, tt := range tests {

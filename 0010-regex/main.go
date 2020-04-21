@@ -80,14 +80,7 @@ func compile(p string) []matcher {
 			// Repeat previous match expression, not previous character
 			matchers[len(matchers)-1] = repeat{matchers[len(matchers)-1]}
 		default:
-			// if two adjacent matchers match the same character but one is repeating and one is exact, then
-			// make the exact match comes first.
-			if len(matchers) > 0 && matchers[len(matchers)-1].match(r) == matched_repeat {
-				matchers[len(matchers)-1] = exact(r)
-				matchers = append(matchers, repeat{exact(r)})
-			} else {
-				matchers = append(matchers, exact(r))
-			}
+			matchers = append(matchers, exact(r))
 		}
 	}
 
