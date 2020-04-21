@@ -19,16 +19,21 @@ type matcher interface {
 	match(c uint8) result
 }
 
-// Matches a specific rune.
+// Matches a specific character.
 type exact uint8
 
-// Matches any rune.
+// Matches any character.
 type any struct{}
 
-// Matches another matcher zero or more times
-type repeat struct {
+type composite struct {
 	m matcher
 }
+
+// Matches another matcher zero or more times
+type repeat composite
+
+// match any character except one
+type except composite
 
 func (m exact) match(c uint8) result {
 	if c == uint8(m) {
@@ -41,6 +46,13 @@ func (m any) match(_ uint8) result {
 	return matched
 }
 
+func (m except) match(c uint8) result {
+	if m.m.match(c) == matched_repeat || m.m.match(c) == matched {
+		return unmatched
+	}
+	return matched
+}
+
 func (m repeat) match(c uint8) result {
 	if m.m.match(c) != fail {
 		return matched_repeat
@@ -50,18 +62,25 @@ func (m repeat) match(c uint8) result {
 
 func compile(p string) []matcher {
 	matchers := make([]matcher, 0, len(p))
-	for ii, r := range p {
+	for _, r := range p {
 		switch {
 		case r == '.':
 			matchers = append(matchers, any{})
 		case r == '*':
+			m := repeat{matchers[len(matchers)-1]}
 			// Consolidate adjacent repeating matchers of the same character
-			if matchers[len(matchers)-1].match(rune(p[ii-1])) == matched_repeat {
+			if len(matchers) > 2 && matchers[len(matchers)-2] == m {
 				continue
 			}
 			// Repeat previous match expression, not previous character
-			matchers[len(matchers)-1] = repeat{matchers[len(matchers)-1]}
+			matchers[len(matchers)-1] = m
 		default:
+			if len(matchers) > 1 {
+				switch matchers[len(matchers)-1].(type) {
+				case any:
+					matchers[len(matchers)-1] = except{exact(r)}
+				}
+			}
 			matchers = append(matchers, exact(r))
 		}
 	}
@@ -98,10 +117,15 @@ func isMatch(s string, p string) bool {
 		} else if result == matched_repeat {
 			// advance matcher
 			for j := m + 1; j < len(matchers); j++ {
-				if matchers[j].match(s[i]) == matched_repeat || matchers[j].match(s[i]) == unmatched {
+				rs := matchers[j].match(s[i])
+				if rs == matched_repeat || rs == unmatched {
 					m = j
 					continue
 				}
+				//else if matchers[j].match(s[i]) == matched {
+				//	m = j  // +1 because this matcher is satisfied by s[i]
+				//	break
+				//}
 				break
 			}
 			i++
