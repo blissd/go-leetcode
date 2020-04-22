@@ -1,7 +1,7 @@
-Given an input string (`s`) and a pattern (`p`), implement regular expression matching with support for '.' and '*'.
+Given an input string (`s`) and a pattern (`p`), implement regular expression matching with support for `.` and `*`.
 
-'.' Matches any single character.
-'*' Matches zero or more of the preceding element.
+* `.` Matches any single character.
+* `*` Matches zero or more of the preceding element.
 
 The matching should cover the entire input string (not partial).
 
@@ -40,6 +40,7 @@ Input:
 s = "aab"
 p = "c*a*b"
 Output: true
+
 Explanation: c can be repeated 0 times, a can be repeated 1 time. Therefore, it matches "aab".
 ```
 Example 5:
@@ -47,7 +48,8 @@ Example 5:
 Input:
 s = "mississippi"
 p = "mis*is*p*."
-Output: false```
+Output: false
+```
 
 # Results
 Runtime: 28 ms, faster than 19.08% of Go online submissions for Regular Expression Matching.
