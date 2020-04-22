@@ -4,9 +4,8 @@ package main
 type result int
 
 const (
-	abort           result = 1
-	advance_matcher        = 2
-	advance_letter         = 4
+	advance_matcher = 2
+	advance_letter  = 4
 )
 
 // a rule for matching a character
@@ -26,12 +25,12 @@ func (m single) match(c uint8) result {
 	if uint8(m) == '.' || c == uint8(m) {
 		return advance_letter | advance_matcher
 	}
-	return abort
+	return advance_matcher
 }
 
 func (m repeat) match(c uint8) result {
 	r := m.m.match(c)
-	if r == abort {
+	if r == advance_matcher {
 		return advance_matcher
 	}
 	return advance_letter
@@ -65,9 +64,6 @@ func isMatch2(s string, matchers []matcher) bool {
 		}
 		mm := matchers[m]
 		result := mm.match(s[i])
-		if result == abort {
-			return false
-		}
 		if result == advance_matcher|advance_letter {
 			// exact single letter match
 			m++
