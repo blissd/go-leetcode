@@ -49,3 +49,6 @@ s = "mississippi"
 p = "mis*is*p*."
 Output: false```
 
+# Results
+Runtime: 28 ms, faster than 19.08% of Go online submissions for Regular Expression Matching.
+Memory Usage: 2.3 MB, less than 80.00% of Go online submissions for Regular Expression Matching.
