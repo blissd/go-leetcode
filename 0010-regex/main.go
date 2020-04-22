@@ -1,19 +1,20 @@
 package main
 
-// what to do after evaluating a matcher
+// What to do after evaluating a matcher
 type result int
 
+// Result of a evaluating a matcher and a character. Either the matcher will be advanced, the letter, or both.
 const (
 	advance_matcher = 2
 	advance_letter  = 4
 )
 
-// a rule for matching a character
+// A rule for matching a character
 type matcher interface {
 	match(c uint8) result
 }
 
-// match one time
+// Match one time
 type single uint8
 
 // Matches another matcher zero or more times
@@ -49,26 +50,15 @@ func compile(p string) []matcher {
 }
 
 func isMatch2(s string, matchers []matcher) bool {
-
-	//if len(s) == 0 || len(matchers) == 0 {
-	//	return false
-	//}
-
 	var i, m int
-	for m < len(matchers) {
-		if m == len(matchers)-1 && i == len(s) {
-			return true
-		}
-		if i == len(s) {
-			return false
-		}
+	for m < len(matchers) && i < len(s) {
 		mm := matchers[m]
 		result := mm.match(s[i])
 		if result == advance_matcher|advance_letter {
 			// exact single letter match
 			m++
 			i++
-		} else if result == advance_letter {
+		} else if result&advance_letter == advance_letter {
 			// Letter is advancing, but matcher is not.
 			// This means we are evaluating a repeat matcher so we must see if
 			// the subsequent matchers can fully match the string from this position
@@ -76,12 +66,20 @@ func isMatch2(s string, matchers []matcher) bool {
 				return true
 			}
 			i++
-		} else if result == advance_matcher {
+		} else if result&advance_matcher == advance_matcher {
 			m++
 		}
 	}
-
-	return m == len(matchers) && i == len(s)
+	// if all subsequent matchers are repeats, then match is successful
+	if i == len(s) {
+		for ; m < len(matchers); m++ {
+			if _, ok := matchers[m].(single); ok {
+				return false
+			}
+		}
+		return true
+	}
+	return false
 }
 
 func isMatch(s string, p string) bool {

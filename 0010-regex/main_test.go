@@ -12,7 +12,7 @@ func Test_isMatch(t *testing.T) {
 		args args
 		want bool
 	}{
-		//{"example 1", args{"aa", "a"}, false},
+		{"example 1", args{"aa", "a"}, false},
 		{"example 2", args{"aa", "a*"}, true},
 		{"example 3", args{"ab", ".*"}, true},
 		{"example 4", args{"aab", "c*a*b"}, true},
