@@ -54,15 +54,15 @@ func isMatch2(s string, matchers []matcher) bool {
 	var i, m int
 	for m < len(matchers) && i < len(s) {
 		mm := matchers[m]
-		result := mm.match(s[i])
-		if result == abort {
+		rs := mm.match(s[i])
+		if rs == abort {
 			return false
 		}
-		if result == advance_matcher|advance_letter {
+		if rs == advance_matcher|advance_letter {
 			// exact single letter match
 			m++
 			i++
-		} else if result&advance_letter == advance_letter {
+		} else if rs&advance_letter == advance_letter {
 			// Letter is advancing, but matcher is not.
 			// This means we are evaluating a repeat matcher so we must see if
 			// the subsequent matchers can fully match the string from this position
@@ -70,7 +70,7 @@ func isMatch2(s string, matchers []matcher) bool {
 				return true
 			}
 			i++
-		} else if result&advance_matcher == advance_matcher {
+		} else if rs&advance_matcher == advance_matcher {
 			m++
 		}
 	}
