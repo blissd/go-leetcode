@@ -1,5 +1,6 @@
 package main
 
+// what to do after evaluating a matcher
 type result int
 
 const (
@@ -8,9 +9,8 @@ const (
 	advance_letter         = 4
 )
 
-// a rule for matching a rune
+// a rule for matching a character
 type matcher interface {
-	// is this rune matched? Nil returned if matched.
 	match(c uint8) result
 }
 
