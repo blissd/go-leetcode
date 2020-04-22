@@ -3,7 +3,8 @@ package main
 // What to do after evaluating a matcher
 type result int
 
-// Result of a evaluating a matcher and a character. Either the matcher will be advanced, the letter, or both.
+// Result of a evaluating a matcher and a character.
+//Either the matcher will be advanced, the letter, or both.
 const (
 	abort           result = 1
 	advance_matcher result = 2
@@ -18,16 +19,16 @@ type matcher interface {
 // Match one time
 type single uint8
 
-// Matches another matcher zero or more times
-type repeat struct {
-	m matcher
-}
-
 func (m single) match(c uint8) result {
 	if uint8(m) == '.' || c == uint8(m) {
 		return advance_letter | advance_matcher
 	}
 	return abort
+}
+
+// Matches another matcher zero or more times
+type repeat struct {
+	m matcher
 }
 
 func (m repeat) match(c uint8) result {
@@ -62,7 +63,7 @@ func isMatch2(s string, matchers []matcher) bool {
 			// exact single letter match
 			m++
 			i++
-		} else if rs&advance_letter == advance_letter {
+		} else if rs == advance_letter {
 			// Letter is advancing, but matcher is not.
 			// This means we are evaluating a repeat matcher so we must see if
 			// the subsequent matchers can fully match the string from this position
@@ -70,7 +71,7 @@ func isMatch2(s string, matchers []matcher) bool {
 				return true
 			}
 			i++
-		} else if rs&advance_matcher == advance_matcher {
+		} else if rs == advance_matcher {
 			m++
 		}
 	}
