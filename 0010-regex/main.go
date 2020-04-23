@@ -48,9 +48,17 @@ func compile(p string) []matcher {
 	return matchers
 }
 
-func isMatch2(s string, matchers []matcher) bool {
-	var i, m int
+type matchKey struct {
+	i int // string index
+	m int // matcher index
+}
+
+func isMatch2(s string, i int, matchers []matcher, m int, cache map[matchKey]bool) bool {
 	for m < len(matchers) && i < len(s) {
+		if match, ok := cache[matchKey{i: i, m: m}]; ok {
+			return match
+		}
+
 		mm := matchers[m]
 		rs := mm.match(s[i])
 		if rs == abort {
@@ -64,8 +72,15 @@ func isMatch2(s string, matchers []matcher) bool {
 			// Letter is advancing, but matcher is not.
 			// This means we are evaluating a repeat matcher so we must see if
 			// the subsequent matchers can fully match the string from this position
-			if m+1 < len(matchers) && isMatch2(s[i:], matchers[m+1:]) {
+			//if match, ok := cache[matchKey{i:i, m:m+1}]; ok {
+			//	return match
+			//}
+
+			if m+1 < len(matchers) && isMatch2(s, i, matchers, m+1, cache) {
+				cache[matchKey{i: i, m: m + 1}] = true
 				return true
+			} else {
+				cache[matchKey{i: i, m: m + 1}] = false
 			}
 			i++
 		} else if rs == advance_matcher {
@@ -85,5 +100,5 @@ func isMatch2(s string, matchers []matcher) bool {
 }
 
 func isMatch(s string, p string) bool {
-	return isMatch2(s, compile(p))
+	return isMatch2(s, 0, compile(p), 0, make(map[matchKey]bool))
 }
