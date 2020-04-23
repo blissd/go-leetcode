@@ -12,5 +12,6 @@ Output: 49
 ```
 
 # Results
-
+Runtime: 828 ms, faster than 5.13% of Go online submissions for Container With Most Water.
+Memory Usage: 5.8 MB, less than 46.67% of Go online submissions for Container With Most Water.
 
