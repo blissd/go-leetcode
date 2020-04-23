@@ -26,24 +26,21 @@ func (m single) match(c uint8) result {
 	return abort
 }
 
-// Matches another matcher zero or more times
-type repeat struct {
-	m matcher
-}
+// Matches zero or more times
+type repeat uint8
 
 func (m repeat) match(c uint8) result {
-	r := m.m.match(c)
-	if r == advance_matcher || r == abort {
-		return advance_matcher
+	if uint8(m) == '.' || c == uint8(m) {
+		return advance_letter
 	}
-	return advance_letter
+	return advance_matcher
 }
 
 func compile(p string) []matcher {
 	matchers := make([]matcher, 0, len(p))
-	for _, r := range p {
+	for i, r := range p {
 		if r == '*' {
-			matchers[len(matchers)-1] = repeat{matchers[len(matchers)-1]}
+			matchers[len(matchers)-1] = repeat(p[i-1])
 		} else {
 			matchers = append(matchers, single(r))
 		}
