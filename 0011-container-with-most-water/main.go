@@ -14,25 +14,18 @@ func max(a, b int) int {
 	return b
 }
 
-func abs(a int) int {
-	if a < 0 {
-		return -a
-	}
-	return a
-}
-
 func maxArea(height []int) int {
-	var maxArea int
-	for x1, h1 := range height {
-		for x2, h2 := range height {
-			if x1 == x2 {
-				continue
-			}
+	left, right := 0, len(height)-1
+	var area int
+	for left != right {
+		area = max(area, (right-left)*min(height[left], height[right]))
 
-			width := abs(x2 - x1)
-			height := min(h1, h2)
-			maxArea = max(maxArea, width*height)
+		if height[left] < height[right] {
+			left++
+		} else {
+			right--
 		}
+
 	}
-	return maxArea
+	return area
 }

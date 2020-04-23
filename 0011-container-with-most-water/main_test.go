@@ -12,7 +12,9 @@ func Test_maxArea(t *testing.T) {
 		want int
 	}{
 		{"example 1", args{[]int{1, 8, 6, 2, 5, 4, 8, 3, 7}}, 49},
+		{"example 2", args{[]int{3, 9, 3, 4, 7, 2, 12, 6}}, 45},
 		{"failure 1", args{[]int{1, 2}}, 1},
+		{"failure 2", args{[]int{2, 3, 4, 5, 18, 17, 6}}, 17},
 		{"random 1", args{[]int{1, 2, 3}}, 2},
 		{"random 2", args{[]int{27, 46, 90, 70, 48, 39, 61, 4, 55, 75, 67, 72, 30, 40, 25, 2, 6, 89, 8, 1}}, 1335},
 		{"random 3", args{[]int{10, 78, 52, 2, 5, 48, 49, 25}}, 245},
