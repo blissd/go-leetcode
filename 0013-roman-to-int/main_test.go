@@ -13,7 +13,7 @@ func Test_romanToInt(t *testing.T) {
 	}{
 		{"1", args{"I"}, 1},
 		{"2", args{"II"}, 2},
-		{"3", args{"IIII"}, 3},
+		{"3", args{"III"}, 3},
 		{"4", args{"IV"}, 4},
 		{"5", args{"V"}, 5},
 		{"6", args{"VI"}, 6},

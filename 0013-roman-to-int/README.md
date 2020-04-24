@@ -53,3 +53,6 @@ Input: "MCMXCIV"
 Output: 1994
 Explanation: M = 1000, CM = 900, XC = 90 and IV = 4.
 ```
+# Results
+Runtime: 0 ms, faster than 100.00% of Go online submissions for Roman to Integer.
+Memory Usage: 3.1 MB, less than 14.29% of Go online submissions for Roman to Integer.
