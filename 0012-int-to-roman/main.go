@@ -1,42 +1,34 @@
 package main
 
+// represents a lower level and the numeral for that level
+type band struct {
+	i int    // integer
+	n string // numeral
+}
+
+var bands = []band{
+	{1000, "M"},
+	{900, "CM"},
+	{500, "D"},
+	{400, "CD"},
+	{100, "C"},
+	{90, "XC"},
+	{50, "L"},
+	{40, "XL"},
+	{10, "X"},
+	{9, "IX"},
+	{5, "V"},
+	{4, "IV"},
+	{1, "I"},
+}
+
 func intToRoman(num int) string {
-	if num == 0 {
-		return ""
+	roman := make([]uint8, 0, 10)
+	for _, b := range bands {
+		for num >= b.i {
+			roman = append(roman, b.n...)
+			num -= b.i
+		}
 	}
-	switch {
-	case num >= 1000:
-		return "M" + intToRoman(num-1000)
-	case num >= 900:
-		return "CM" + intToRoman(num-900)
-	case num >= 500:
-		return "D" + intToRoman(num-500)
-	case num >= 400:
-		return "CD" + intToRoman(num-400)
-	case num >= 100:
-		return "C" + intToRoman(num-100)
-	case num >= 90:
-		return "XC" + intToRoman(num-90)
-	case num >= 50:
-		return "L" + intToRoman(num-50)
-	case num >= 40:
-		return "XL" + intToRoman(num-40)
-	case num >= 10:
-		return "X" + intToRoman(num-10)
-	case num == 9:
-		return "IX"
-	case num == 8:
-		return "VIII"
-	case num == 7:
-		return "VII"
-	case num == 6:
-		return "VI"
-	case num == 5:
-		return "V"
-	case num == 4:
-		return "IV"
-	case num < 4:
-		return "I" + intToRoman(num-1)
-	}
-	return ""
+	return string(roman)
 }
