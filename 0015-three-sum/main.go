@@ -14,7 +14,7 @@ type three struct {
 func threeSum(nums []int) [][]int {
 	rs := make(map[three]bool)
 	for _, n := range nums {
-		if a, b, err := twoSum(nums, -1); err == nil {
+		if a, b, err := twoSum(nums, 0-n); err == nil {
 			r := []int{a, b, n}
 			sort.Ints(r)
 			rs[three{r[0], r[1], r[2]}] = true
@@ -31,14 +31,21 @@ func threeSum(nums []int) [][]int {
 func twoSum(nums []int, target int) (int, int, error) {
 	// map from value to index
 	lookup := count(nums)
-	for i, n := range nums {
-		// compute value we want to lookup index for
-		nn := target - n
-		if ii, ok := lookup[nn]; ok && ii != i {
-			return nums[ii], nums[i], nil
+	if c, _ := lookup[-target]; true {
+		lookup[-target] = c - 1
+	}
+	for n, ncount := range lookup {
+		if ncount == 0 {
+			continue
 		}
 
-		lookup[n] = i
+		nn := target - n
+		if nn == n && ncount == 1 {
+			continue
+		}
+		if nncount, ok := lookup[nn]; ok && nncount > 0 {
+			return n, nn, nil
+		}
 	}
 
 	return 0, 0, ErrNoSum
