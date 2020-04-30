@@ -36,17 +36,30 @@ func findThrees(nums []int, target int) []three {
 	counts := count(nums)
 	for n, ncount := range counts {
 		nn := (-target) - n
+		nncount, ok := counts[nn]
 
-		if (n == target || nn == target || n == nn) && ncount < 2 {
+		if !ok {
+			continue
+		}
+
+		if n == target && ncount < 2 {
+			continue
+		}
+
+		if nn == target && nncount < 2 {
+			continue
+		}
+
+		if n == nn && ncount < 2 {
 			continue
 		}
 
 		if n == target && nn == target && ncount < 3 {
 			continue
 		}
-		if nncount, ok := counts[nn]; ok && nncount > 0 {
-			threes = append(threes, three{target, n, nn}.sort())
-		}
+
+		t := three{target, n, nn}.sort()
+		threes = append(threes, t)
 	}
 
 	return threes
