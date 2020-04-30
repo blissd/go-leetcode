@@ -17,7 +17,7 @@ func (t three) sort() three {
 func threeSum(nums []int) [][]int {
 	threes := make(map[three]bool) // a unique set
 	for _, n := range nums {
-		for _, t := range findThrees(nums, -n) {
+		for _, t := range findThrees(nums, n) {
 			threes[t] = true
 		}
 	}
@@ -34,20 +34,20 @@ func findThrees(nums []int, target int) []three {
 	threes := []three{}
 
 	counts := count(nums)
-	if c, _ := counts[-target]; true {
-		counts[-target] = c - 1
+	if c, _ := counts[target]; true {
+		counts[target] = c - 1
 	}
 	for n, ncount := range counts {
 		if ncount == 0 {
 			continue
 		}
 
-		nn := target - n
+		nn := (-target) - n
 		if nn == n && ncount == 1 {
 			continue
 		}
 		if nncount, ok := counts[nn]; ok && nncount > 0 {
-			threes = append(threes, three{-target, n, nn}.sort())
+			threes = append(threes, three{target, n, nn}.sort())
 		}
 	}
 
