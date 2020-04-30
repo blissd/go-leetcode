@@ -34,16 +34,14 @@ func findThrees(nums []int, target int) []three {
 	threes := []three{}
 
 	counts := count(nums)
-	if c, _ := counts[target]; true {
-		counts[target] = c - 1
-	}
 	for n, ncount := range counts {
-		if ncount == 0 {
+		nn := (-target) - n
+
+		if (n == target || nn == target || n == nn) && ncount < 2 {
 			continue
 		}
 
-		nn := (-target) - n
-		if nn == n && ncount == 1 {
+		if n == target && nn == target && ncount < 3 {
 			continue
 		}
 		if nncount, ok := counts[nn]; ok && nncount > 0 {
