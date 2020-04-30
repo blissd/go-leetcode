@@ -1,40 +1,43 @@
 package main
 
 import (
-	"errors"
 	"sort"
 )
-
-var ErrNoSum = errors.New("no sum")
 
 type three struct {
 	a, b, c int
 }
 
+func (t three) sort() three {
+	tt := []int{t.a, t.b, t.c}
+	sort.Ints(tt)
+	return three{tt[0], tt[1], tt[2]}
+}
+
 func threeSum(nums []int) [][]int {
-	rs := make(map[three]bool)
+	threes := make(map[three]bool) // a unique set
 	for _, n := range nums {
-		if a, b, err := twoSum(nums, 0-n); err == nil {
-			r := []int{a, b, n}
-			sort.Ints(r)
-			rs[three{r[0], r[1], r[2]}] = true
+		for _, t := range findThrees(nums, -n) {
+			threes[t] = true
 		}
 	}
 
-	keys := make([][]int, 0, len(rs))
-	for k, _ := range rs {
-		keys = append(keys, []int{k.a, k.b, k.c})
+	result := make([][]int, 0, len(threes))
+	for k, _ := range threes {
+		result = append(result, []int{k.a, k.b, k.c})
 	}
-	return keys
+	return result
 }
 
-func twoSum(nums []int, target int) (int, int, error) {
+func findThrees(nums []int, target int) []three {
 	// map from value to index
-	lookup := count(nums)
-	if c, _ := lookup[-target]; true {
-		lookup[-target] = c - 1
+	threes := []three{}
+
+	counts := count(nums)
+	if c, _ := counts[-target]; true {
+		counts[-target] = c - 1
 	}
-	for n, ncount := range lookup {
+	for n, ncount := range counts {
 		if ncount == 0 {
 			continue
 		}
@@ -43,12 +46,12 @@ func twoSum(nums []int, target int) (int, int, error) {
 		if nn == n && ncount == 1 {
 			continue
 		}
-		if nncount, ok := lookup[nn]; ok && nncount > 0 {
-			return n, nn, nil
+		if nncount, ok := counts[nn]; ok && nncount > 0 {
+			threes = append(threes, three{-target, n, nn}.sort())
 		}
 	}
 
-	return 0, 0, ErrNoSum
+	return threes
 }
 
 func count(nums []int) map[int]int {
