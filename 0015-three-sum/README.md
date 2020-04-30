@@ -17,5 +17,5 @@ A solution set is:
 ]
 ```
 # Results
-Runtime: 1228 ms, faster than 11.00% of Go online submissions for 3Sum.
-Memory Usage: 7.9 MB, less than 100.00% of Go online submissions for 3Sum.
+Runtime: 336 ms, faster than 31.25% of Go online submissions for 3Sum.
+Memory Usage: 8.2 MB, less than 100.00% of Go online submissions for 3Sum.
