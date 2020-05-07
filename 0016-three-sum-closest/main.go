@@ -13,7 +13,7 @@ func abs(i int) int {
 
 func threeSumClosest(nums []int, target int) int {
 	sort.Ints(nums)
-	closest := -target
+	closest := nums[0] + nums[1] + nums[2]
 	for i := 0; i < len(nums)-2; i++ {
 		a := nums[i]
 		start := i + 1
@@ -29,9 +29,9 @@ func threeSumClosest(nums []int, target int) int {
 				closest = sum
 			}
 			if target-sum > 0 {
-				end--
-			} else {
 				start++
+			} else {
+				end--
 			}
 		}
 	}
