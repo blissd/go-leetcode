@@ -18,25 +18,30 @@ func (s stack) peek() rune {
 	return s[len(s)-1]
 }
 
+type pair struct {
+	open  rune
+	close rune
+}
+
+var pairs = []pair{
+	{'(', ')'},
+	{'[', ']'},
+	{'{', '}'},
+}
+
 func isValid(s string) bool {
 	var ss stack = make([]rune, 0, 0)
 	for _, r := range s {
-		if r == '{' || r == '(' || r == '[' {
-			ss = ss.push(r)
-		} else if r == '}' || r == ')' || r == ']' {
-			if ss.empty() {
+		for _, p := range pairs {
+			if r == p.open {
+				ss = ss.push(r)
+				break
+			} else if r == p.close && ss.peek() == p.open {
+				ss = ss.pop()
+				break
+			} else if r == p.close && ss.peek() != p.open {
 				return false
 			}
-			if r == '}' && ss.peek() != '{' {
-				return false
-			}
-			if r == ']' && ss.peek() != '[' {
-				return false
-			}
-			if r == ')' && ss.peek() != '(' {
-				return false
-			}
-			ss = ss.pop()
 		}
 	}
 	return ss.empty()
