@@ -14,7 +14,10 @@ func Test_divide(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{"example 1", args{10, 3}, 3},
-		{"example 2", args{-7, -3}, 2},
+		{"example 2", args{7, -3}, -2},
+		{"example 2a", args{-7, 3}, -2},
+		{"example 2a", args{-7, -3}, 2},
+		{"dividend zero", args{0, -3}, 0},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -23,3 +23,7 @@ Note:
     The divisor will never be 0.
     Assume we are dealing with an environment which could only store integers within the 32-bit signed integer range: [−231,  231 − 1]. For the purpose of this problem, assume that your function returns 231 − 1 when the division result overflows.
 
+# Result
+
+Runtime: 2496 ms, faster than 23.79% of Go online submissions for Divide Two Integers.
+Memory Usage: 2.5 MB, less than 100.00% of Go online submissions for Divide Two Integers.
