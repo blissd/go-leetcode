@@ -32,3 +32,6 @@ Example 5:
 Input: "{[]}"
 Output: true
 ```
+# Result
+Runtime: 0 ms, faster than 100.00% of Go online submissions for Valid Parentheses.
+Memory Usage: 2.1 MB, less than 31.18% of Go online submissions for Valid Parentheses.

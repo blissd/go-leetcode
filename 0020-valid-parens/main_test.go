@@ -16,6 +16,7 @@ func Test_isValid(t *testing.T) {
 		{"example 3", args{"(]"}, false},
 		{"example 4", args{"([)]"}, false},
 		{"example 5", args{"{[]}"}, true},
+		{"failure 1", args{"]"}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

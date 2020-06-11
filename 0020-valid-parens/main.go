@@ -36,6 +36,8 @@ func isValid(s string) bool {
 			if r == p.open {
 				ss = ss.push(r)
 				break
+			} else if r == p.close && ss.empty() {
+				return false
 			} else if r == p.close && ss.peek() == p.open {
 				ss = ss.pop()
 				break
