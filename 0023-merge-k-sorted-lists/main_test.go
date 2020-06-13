@@ -38,7 +38,8 @@ func Test_mergeKLists(t *testing.T) {
 		args args
 		want *ListNode
 	}{
-		{"example 1", args{[]*ListNode{nn(1, 4, 5), nn(1, 3, 5), nn(2, 6)}}, nn(1, 2, 2, 3, 4, 4, 5, 6)},
+		{"example 1", args{[]*ListNode{nn(1, 4, 5), nn(1, 3, 4), nn(2, 6)}}, nn(1, 1, 2, 3, 4, 4, 5, 6)},
+		{"failure 1", args{[]*ListNode{nil}}, nil},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
