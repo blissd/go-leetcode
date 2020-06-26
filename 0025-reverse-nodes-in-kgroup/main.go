@@ -18,8 +18,8 @@ func reverseKGroup(head *ListNode, k int) *ListNode {
 		return head
 	}
 
-	var first ListNode
-	last := &first
+	var first *ListNode
+	last := first
 
 	for atLeast(head, k) {
 		// build reversed segment
@@ -30,11 +30,15 @@ func reverseKGroup(head *ListNode, k int) *ListNode {
 			start = &ListNode{head.Val, start}
 			head = head.Next
 		}
-
-		last.Next = start
-		last = end
+		if last == nil {
+			first = start
+			last = end
+		} else {
+			last.Next = start
+			last = end
+		}
 	}
 
 	last.Next = head
-	return &first
+	return first
 }

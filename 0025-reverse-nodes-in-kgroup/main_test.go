@@ -17,7 +17,6 @@ func Test_reverseKGroup(t *testing.T) {
 		{"Example 1", args{New(1, 2, 3, 4, 5), 2}, New(2, 1, 4, 3, 5)},
 		{"Example 2", args{New(1, 2, 3, 4, 5), 3}, New(3, 2, 1, 4, 5)},
 		{"k=len", args{New(1, 2, 3, 4, 5), 5}, New(5, 4, 3, 2, 1)},
-		{"k=0", args{New(1, 2, 3, 4, 5), 0}, New(1, 2, 3, 4, 5)},
 		{"k=1", args{New(1, 2, 3, 4, 5), 1}, New(1, 2, 3, 4, 5)},
 		{"nil", args{nil, 3}, nil},
 	}

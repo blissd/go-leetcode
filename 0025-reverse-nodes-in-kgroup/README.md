@@ -16,3 +16,6 @@ Note:
     Only constant extra memory is allowed.
     You may not alter the values in the list's nodes, only nodes itself may be changed.
 
+# Result
+Runtime: 4 ms, faster than 96.92% of Go online submissions for Reverse Nodes in k-Group.
+Memory Usage: 3.9 MB, less than 10.07% of Go online submissions for Reverse Nodes in k-Group.
