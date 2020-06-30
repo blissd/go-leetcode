@@ -18,3 +18,7 @@ A solution set is:
 ]
 
 ```
+
+# Result
+Runtime: 200 ms, faster than 12.00% of Go online submissions for 4Sum.
+Memory Usage: 4.3 MB, less than 26.73% of Go online submissions for 4Sum.
