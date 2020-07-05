@@ -37,3 +37,6 @@ for (int i = 0; i < len; i++) {
     print(nums[i]);
 }
 ```
+# Result
+Runtime: 12 ms, faster than 33.09% of Go online submissions for Remove Duplicates from Sorted Array.
+Memory Usage: 4.6 MB, less than 18.70% of Go online submissions for Remove Duplicates from Sorted Array.
