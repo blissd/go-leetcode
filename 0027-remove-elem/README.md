@@ -41,3 +41,6 @@ for (int i = 0; i < len; i++) {
     print(nums[i]);
 }
 ```
+# Result
+Runtime: 0 ms, faster than 100.00% of Go online submissions for Remove Element.
+Memory Usage: 2.3 MB, less than 6.07% of Go online submissions for Remove Element.
