@@ -17,3 +17,7 @@ Clarification:
 What should we return when needle is an empty string? This is a great question to ask during an interview.
 
 For the purpose of this problem, we will return 0 when needle is an empty string. This is consistent to C's strstr() and Java's indexOf().
+
+# Result
+Runtime: 0 ms, faster than 100.00% of Go online submissions for Implement strStr().
+Memory Usage: 2.3 MB, less than 100.00% of Go online submissions for Implement strStr().

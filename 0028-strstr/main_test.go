@@ -15,6 +15,7 @@ func Test_strStr(t *testing.T) {
 		{"example 1", args{"hello", "ll"}, 2},
 		{"example 2", args{"aaaaa", "baa"}, -1},
 		{"empty needle", args{"aaaaa", ""}, 0},
+		{"failure 1", args{"a", "a"}, 0},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
