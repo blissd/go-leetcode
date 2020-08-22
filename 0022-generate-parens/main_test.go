@@ -2,6 +2,7 @@ package main
 
 import (
 	"reflect"
+	"sort"
 	"testing"
 )
 
@@ -15,10 +16,15 @@ func Test_generateParenthesis(t *testing.T) {
 		want []string
 	}{
 		{"example 1", args{3}, []string{"((()))", "(()())", "(())()", "()(())", "()()()"}},
+		{"failure 1", args{4}, []string{"(((())))", "((()()))", "((())())", "((()))()", "(()(()))", "(()()())", "(()())()", "(())(())", "(())()()", "()((()))", "()(()())", "()(())()", "()()(())", "()()()()"}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := generateParenthesis(tt.args.n); !reflect.DeepEqual(got, tt.want) {
+			got := generateParenthesis(tt.args.n)
+			sort.Strings(got)
+			want := tt.want
+			sort.Strings(want)
+			if !reflect.DeepEqual(got, want) {
 				t.Errorf("generateParenthesis() = %v, want %v", got, tt.want)
 			}
 		})
