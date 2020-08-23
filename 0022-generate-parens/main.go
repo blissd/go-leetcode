@@ -1,33 +1,28 @@
 package main
 
-type Set map[string]struct{}
-
 func generateParenthesis(n int) []string {
 	if n == 0 {
 		return []string{}
 	}
 
-	results := make(Set)
-
-	gen("()", results, n-1)
-
-	parens := make([]string, len(results), len(results))
-	i := 0
-	for k := range results {
-		parens[i] = k
-		i++
-	}
-
-	return parens
+	result := gen("(", 1, 0, n)
+	return result
 }
 
-func gen(parens string, results Set, n int) {
-	if n == 0 {
-		results[parens] = struct{}{}
-		return
+func gen(prefix string, open int, closed int, n int) []string {
+	if closed == n {
+		return []string{prefix}
 	}
-	/// (())(())
-	gen("()"+parens, results, n-1)
-	gen("("+parens+")", results, n-1)
-	gen(parens+"()", results, n-1)
+
+	var left []string
+	if open < n {
+		left = gen(prefix+"(", open+1, closed, n)
+	}
+
+	var right []string
+	if closed < open {
+		right = gen(prefix+")", open, closed+1, n)
+	}
+
+	return append(left, right...)
 }
