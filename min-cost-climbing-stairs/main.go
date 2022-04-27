@@ -1,23 +1,20 @@
 package main
 
-import "math"
-
 func minCostClimbingStairs(cost []int) int {
 	if len(cost) == 2 {
 		return min(cost[0], cost[1])
 	}
-	// steps[i] is the lowest cumulative cost to use the i'th step.
-	steps := make([]int, len(cost))
-	for i, _ := range steps {
-		steps[i] = math.MaxInt
-	}
-	steps[0], steps[1] = cost[0], cost[1]
+
+	// cumulative cost of two previous steps
+	downOne, downTwo := cost[0], cost[1]
+	step := 0
 
 	for i := 2; i < len(cost); i++ {
-		steps[i] = cost[i] + min(steps[i-1], steps[i-2])
+		step = cost[i] + min(downOne, downTwo)
+		downOne, downTwo = downTwo, step
 	}
 
-	return min(steps[len(steps)-1], steps[len(steps)-2])
+	return min(downOne, downTwo)
 }
 
 // oh, golang!
